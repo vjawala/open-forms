@@ -6,6 +6,7 @@ from openforms.contrib.haal_centraal.clients import get_brp_client
 from openforms.contrib.haal_centraal.clients.brp import NaturalPersonDetails
 from openforms.contrib.haal_centraal.constants import BRPVersions
 from openforms.contrib.haal_centraal.models import HaalCentraalConfig
+from openforms.submissions.models import Submission
 
 from ...exceptions import PrefillSkipped
 from .constants import FamilyMembersTypeChoices
@@ -16,7 +17,7 @@ logger = structlog.stdlib.get_logger(__name__)
 
 
 def get_data_from_haal_centraal(
-    bsn: str, options: FamilyMemberOptions
+    bsn: str, options: FamilyMemberOptions, submission: Submission
 ) -> list[NaturalPersonDetails]:
     config = HaalCentraalConfig.get_solo()
     hc_version = config.brp_personen_version
@@ -26,7 +27,7 @@ def get_data_from_haal_centraal(
         )
         raise PrefillSkipped("Unsupported Haal Centraal BRP Personen version.")
 
-    with get_brp_client() as client:
+    with get_brp_client(submission=submission) as client:
         match options["type"]:
             case FamilyMembersTypeChoices.partners:
                 return client.get_family_members(
