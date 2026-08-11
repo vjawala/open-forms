@@ -6,7 +6,6 @@ from django.core.cache.backends.base import DEFAULT_TIMEOUT
 
 import jq
 import structlog
-from ape_pie import APIClient
 from json_logic import jsonLogic
 from zgw_consumers.client import build_client
 
@@ -20,7 +19,10 @@ from openforms.variables.models import DataMappingTypes, ServiceFetchConfigurati
 
 logger = structlog.stdlib.get_logger(__name__)
 
-def get_client(var: FormVariable, submission: Submission | None = None) -> "ServiceFetchClient":
+
+def get_client(
+    var: FormVariable, submission: Submission | None = None
+) -> "ServiceFetchClient":
     if not var.service_fetch_configuration:
         raise ValueError(
             f"Can't perform service fetch on {var}. "
@@ -34,7 +36,9 @@ def get_client(var: FormVariable, submission: Submission | None = None) -> "Serv
         if submission is not None
         else None
     )
-    return build_client(fetch_config.service, client_factory=ServiceFetchClient, context=context)
+    return build_client(
+        fetch_config.service, client_factory=ServiceFetchClient, context=context
+    )
 
 
 @dataclass
@@ -49,7 +53,10 @@ class FetchResult(PreRequestMixin):
 
 class ServiceFetchClient(PreRequestMixin, LoggingClient):
     def perform_service_fetch(
-        self, var: FormVariable, context: FormioData, submission: Submission | None = None
+        self,
+        var: FormVariable,
+        context: FormioData,
+        submission: Submission | None = None,
     ) -> FetchResult | None:
         """Fetch a value from a http-service, perform a transformation on it and
         return the result.
