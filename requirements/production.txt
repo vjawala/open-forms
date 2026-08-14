@@ -1,1 +1,4 @@
 -r base.txt
+
+open-forms-ext-haalcentraal-hr==0.3.1
+open-forms-ext-token-exchange==0.5.0

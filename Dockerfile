@@ -4,7 +4,7 @@
 # image minimal in size.
 
 # must be at the top to use it in FROM clauses
-ARG SDK_RELEASE=latest
+ARG SDK_RELEASE=3.5.6
 FROM openformulieren/open-forms-sdk:${SDK_RELEASE} AS sdk-image
 
 # Stage 1 - Backend build environment
@@ -166,11 +166,11 @@ USER maykin
 
 ARG RELEASE ARG SDK_RELEASE=latest COMMIT_HASH
 ENV GIT_SHA=${COMMIT_HASH}
-ENV RELEASE=${RELEASE} SDK_RELEASE=${SDK_RELEASE}
+ENV RELEASE="${RELEASE}-vj" SDK_RELEASE=${SDK_RELEASE}
 
 ENV DJANGO_SETTINGS_MODULE=openforms.conf.docker PYTHONOPTIMIZE=1
 
-ARG EXTENSIONS=''
+ARG EXTENSIONS='token_exchange,prefill_haalcentraalhr'
 ENV OPEN_FORMS_EXTENSIONS=${EXTENSIONS}
 
 ARG SECRET_KEY=dummy OTEL_SDK_DISABLED=true
