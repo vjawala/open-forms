@@ -23,7 +23,7 @@ logger = structlog.stdlib.get_logger(__name__)
 
 
 @dataclass
-class FetchResult(PreRequestMixin):
+class FetchResult:
     value: JSONValue
     request_parameters: JSONObject
     response_json: JSONValue
