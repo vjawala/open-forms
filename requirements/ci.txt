@@ -158,7 +158,7 @@ diff-match-patch==20241021
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   django-import-export
-django==5.2.14
+django==5.2.17
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
@@ -1114,7 +1114,7 @@ sqids==0.5.2
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
-sqlparse==0.5.5
+sqlparse==0.6.0
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
@@ -1124,7 +1124,7 @@ structlog==25.5.0
     #   -c requirements/base.txt
     #   -r requirements/base.txt
     #   django-structlog
-tablib==3.9.0
+tablib==3.10.0
     # via
     #   -c requirements/base.txt
     #   -r requirements/base.txt
