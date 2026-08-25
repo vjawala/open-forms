@@ -515,3 +515,54 @@ class ServiceFetchConfigPreRequestTests(DisableNLXRewritingMixin, TestCase):
         # context to make sure that token exchange does not interfere with none-submission-loaded calls
         context = self.mock.call_args.kwargs["context"]
         self.assertEqual(context, None)
+
+    @requests_mock.Mocker()
+    def test_pre_request_client_factory_used(self, m):
+        m.get("https://httpbin.org/get", json={"url": "https://httpbin.org/get"})
+
+        self.mock.reset_mock()
+
+        var = FormVariableFactory.build(
+            service_fetch_configuration=ServiceFetchConfigurationFactory.build(
+                service=ServiceFactory.build(
+                    api_type=APITypes.orc,
+                    api_root="https://httpbin.org/",
+                    auth_type=AuthTypes.no_auth,
+                ),
+                path="get",
+            )
+        )
+
+        with patch(
+            "openforms.pre_requests.clients.registry", new=self.pre_req_register
+        ):
+            perform_service_fetch(var, FormioData())
+
+        self.assertEqual(self.mock.call_count, 1)
+
+    @requests_mock.Mocker()
+    def test_default_client_factory_used(self, m):
+        m.get("https://httpbin.org/get", json={"url": "https://httpbin.org/get"})
+        self.mock.reset_mock()
+
+        var = FormVariableFactory.build(
+            service_fetch_configuration=ServiceFetchConfigurationFactory.build(
+                service=ServiceFactory.build(
+                    api_type=APITypes.orc,
+                    api_root="https://httpbin.org/",
+                    auth_type=AuthTypes.api_key,
+                ),
+                path="get",
+            )
+        )
+
+        with patch(
+            "openforms.pre_requests.clients.registry", new=self.pre_req_register
+        ):
+            perform_service_fetch(var, FormioData())
+
+        result = perform_service_fetch(var, FormioData())
+        value = result.value
+
+        self.assertEqual(value["url"], "https://httpbin.org/get")
+        self.assertEqual(self.mock.call_count, 0)
