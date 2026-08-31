@@ -9,7 +9,6 @@ import structlog
 from json_logic import jsonLogic
 from zgw_consumers.client import build_client
 from zgw_consumers.constants import AuthTypes
-from zgw_consumers.nlx import NLXClient
 
 from openforms.contrib.client import LoggingClient
 from openforms.formio.service import FormioData
@@ -35,6 +34,12 @@ class FetchResult:
 class ServiceFetchClient(PreRequestMixin, LoggingClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # overwrite binding contextvars, as the "client=self" in the loggingMixin
+        # causes errors in this case with submissions
+        structlog.contextvars.bind_contextvars(
+            base_url=self.base_url,
+            client=type(self).__qualname__,
+        )
 
 
 def perform_service_fetch(
@@ -83,13 +88,11 @@ def perform_service_fetch(
 
     if fetch_config.service.auth_type == AuthTypes.api_key:
         # default client factory, so we do not overwrite the configured api key
-        client_factory = NLXClient
+        client = build_client(fetch_config.service)
     else:
-        client_factory = ServiceFetchClient
-
-    client = build_client(
-        fetch_config.service, client_factory=client_factory, context=context
-    )
+        client = build_client(
+            fetch_config.service, client_factory=ServiceFetchClient, context=context
+        )
 
     def _do_fetch():
         log.info("perform_service_fetch_http_call_started")
