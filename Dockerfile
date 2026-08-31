@@ -165,16 +165,19 @@ RUN chown -R maykin /app
 # drop privileges
 USER maykin
 
-ARG RELEASE ARG SDK_RELEASE=latest COMMIT_HASH
+ARG RELEASE=3.5.7
+ARG COMMIT_HASH
 ENV GIT_SHA=${COMMIT_HASH}
-ENV RELEASE="${RELEASE}-vj" SDK_RELEASE=${SDK_RELEASE}
+ENV RELEASE="${RELEASE}-vj"
+ENV SDK_RELEASE=${SDK_RELEASE}
 
 ENV DJANGO_SETTINGS_MODULE=openforms.conf.docker PYTHONOPTIMIZE=1
 
 ARG EXTENSIONS='token_exchange,prefill_haalcentraalhr'
 ENV OPEN_FORMS_EXTENSIONS=${EXTENSIONS}
 
-ARG SECRET_KEY=dummy OTEL_SDK_DISABLED=true
+ARG SECRET_KEY=dummy
+ARG OTEL_SDK_DISABLED=true
 
 LABEL org.label-schema.vcs-ref=$COMMIT_HASH \
       org.label-schema.vcs-url="https://github.com/open-formulieren/open-forms" \
