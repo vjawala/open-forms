@@ -86,13 +86,13 @@ def perform_service_fetch(
         else None
     )
 
-    if fetch_config.service.auth_type == AuthTypes.api_key:
-        # default client factory, so we do not overwrite the configured api key
-        client = build_client(fetch_config.service)
-    else:
+    if fetch_config.service.auth_type == AuthTypes.no_auth:
         client = build_client(
             fetch_config.service, client_factory=ServiceFetchClient, context=context
         )
+    else:
+        # default client factory, so we do not overwrite the configured auth
+        client = build_client(fetch_config.service)
 
     def _do_fetch():
         log.info("perform_service_fetch_http_call_started")
