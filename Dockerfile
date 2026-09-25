@@ -4,7 +4,7 @@
 # image minimal in size.
 
 # must be at the top to use it in FROM clauses
-ARG SDK_RELEASE=3.5.7
+ARG SDK_RELEASE=3.5.9
 FROM openformulieren/open-forms-sdk:${SDK_RELEASE} AS sdk-image
 
 # Stage 1 - Backend build environment
@@ -165,7 +165,7 @@ RUN chown -R maykin /app
 # drop privileges
 USER maykin
 
-ARG RELEASE=3.5.7
+ARG RELEASE=3.5.9
 ARG COMMIT_HASH
 ENV GIT_SHA=${COMMIT_HASH}
 ENV RELEASE="${RELEASE}-vj"
